@@ -6,43 +6,62 @@ class Figura(object):
         print("Figura init")
 
 class Prostokat(Figura):
+    x: int
+    y: int
     def __init__(self, x: int, y: int):
-        # dokoncz definicje
+        print("Prostokat")
+        self.x = x
+        self.y = y
 
 class Kwadrat(Prostokat):
+    x: int
     def __init__(self, x: int):
-        # dokoncz definicje
+        # print("Kwadrat")
+        self.x = x
 
 class Kolo(Figura):
+    r: float
     def __init__(self, r: float):
-        # dokoncz definicje
+        print("Kolo")
+        self.r = r
 
-# Funkcje pole
+
 @dispatch(Figura)
 def pole(instance: Figura):
     print("Pole: Figura")
     return 0
 
-# Napisz wersje 'pole' dla:
-# - Prostokat (bez podania argumentów boków)
-# - Prostokat (z podaniem argumentów boków jako int, int)
-# - Kwadrat (bez podania argumentów boku)
-# - Kwadrat (z podaniem argumentów boku jako int)
-# - Kolo (bez podania argumentów promienia)
-# - Kolo (z podaniem argumentów promienia jako float)
-# Uzywaj print() do weryfikacji wywolan
+@dispatch(Prostokat)
+def pole(instance: Prostokat):
+    return instance.x * instance.y
 
+@dispatch(Prostokat, int, int)
+def pole(instance: Prostokat, x: int, y: int):
+    return x * y
 
+@dispatch(Kwadrat)
+def pole(instance: Kwadrat):
+    return instance.x ** 2
 
+@dispatch(Kwadrat, int)
+def pole(instance: Kwadrat, x: int):
+    return x ** 2
 
+@dispatch(Kolo)
+def pole(instance: Kolo):
+    print("Pole: Kolo (bez podania promienia)")
+    return math.pi * (instance.r ** 2)
 
-# Polimorfizm w czasie wykonywania
+@dispatch(Kolo, float)
+def pole(instance: Kolo, r: float):
+    print(f"Pole: Kolo (z podaniem promienia {r})")
+    return math.pi * (r ** 2)
+
 def polaPowierzchni(listaFigur):
     for i in listaFigur:
         print(f"Pole obiektu: {pole(i)}")
 
 if __name__ == "__main__":
-    # Tworzenie obiektów
     print("=== Tworzenie obiektów ===")
     a, b, c, d = Figura(), Prostokat(2, 4), Kwadrat(2), Kolo(3)
 
@@ -61,4 +80,3 @@ if __name__ == "__main__":
     # Polimorfizm
     print("\n=== Polimorfizm w czasie wykonywania ===")
     polaPowierzchni([a, b, c, d])
-

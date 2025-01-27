@@ -6,39 +6,63 @@ def log_event(event):
     raise NotImplementedError(f"Brak implementacji dla typu: {type(event)}")
 
 # Napisz obsluge zdarzen str
+@log_event.register(str)
+def log_event_str(event: str):
+    print("obsluga string")
 
-# Napisz obsluge zdarzen int
+#Napisz obsluge zdarzen int
+@log_event.register(int)
+def log_event_int(event: int):
+    print("obsluga int")
 
 # Napisz obsluge zdarzen typu dict
-
+@log_event.register(dict)
+def log_event_dict(event: dict):
+    print("obsluga slownik")
 
 # Klasa z metodą używającą singledispatchmethod
 class EventHandler:
     def __init__(self):
-        self.event_count = 0 # uwaga: licznik powiekszac o +1 przy kazdej rejestracji
+        self.event_count = 0 
 
     @singledispatchmethod
     def handle_event(self, event):
-        """Domyślna obsługa zdarzeń"""
         raise NotImplementedError(f"Nieobsługiwany typ zdarzenia: {type(event)}")
-
-
+    
     # Napisz obsluge zdarzen str, pamietaj: self.event_count += 1
+    @handle_event.register(str)
+    def handle_event_str(self, event: str):
+        self.event_count += 1
+        print("obsluga string z klasy")
 
     # Napisz obsluge zdarzen int
+    @handle_event.register(int)
+    def handle_event_int(self, event: int):
+        self.event_count += 1
+        print("obsluga int z klasy")
 
     # Napisz obsluge zdarzen list
-
-
+    @handle_event.register(list)
+    def handle_event_list(self, event: list):
+        self.event_count += 1
+        print("obsluga list z klasy")
+        
 # Klasa pochodna z nowymi rejestracjami typów
 class DerivedHandler(EventHandler):
-
-    # Napisz obsluge zdarzen int
-
-    # Napisz obsluge zdarzen float
-
+    @singledispatchmethod
+    def handle_event(self, event):
+        super().handle_event(event)
 
 
+    @handle_event.register(int)
+    def handle_event_float(self, event: int):
+        self.event_count += 1
+        print("obsluga float z klasy pochodnej")
+
+    @handle_event.register(float)
+    def handle_event_float(self, event: float):
+        self.event_count += 1
+        print("obsluga float z klasy pochodnej")
 
 
 # Demonstracja użycia
